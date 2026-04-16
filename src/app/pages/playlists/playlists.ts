@@ -93,4 +93,16 @@ export class Playlists implements OnInit {
     this.newName = '';
     this.newDescription = '';
   }
+
+
+  // Genera un color único por playlist basado en su ID
+// Rellena hasta 4 portadas repitiendo las existentes
+getCovers(covers: string[]): string[] {
+  if (covers.length === 0) return [];
+  const result: string[] = [];
+  for (let i = 0; i < 4; i++) {
+    result.push(covers[i % covers.length]);
+  }
+  return result;
+}
 }

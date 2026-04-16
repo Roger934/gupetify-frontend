@@ -3,6 +3,8 @@ export interface Playlist {
   name: string;
   description: string;
   created_at: string;
+  song_count?: number;
+  covers?: string[];
 }
 
 export interface PlaylistSong {

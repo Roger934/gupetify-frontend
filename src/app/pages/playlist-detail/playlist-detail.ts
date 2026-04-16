@@ -91,6 +91,16 @@ export class PlaylistDetail implements OnInit {
     });
   }
 
+  // Rellena hasta 4 portadas repitiendo las existentes
+getCovers(covers: string[]): string[] {
+  if (covers.length === 0) return [];
+  const result: string[] = [];
+  for (let i = 0; i < 4; i++) {
+    result.push(covers[i % covers.length]);
+  }
+  return result;
+}
+
   // RÚBRICA #11d — Navegación programática
   goBack() {
     this.router.navigate(['/playlists']);
