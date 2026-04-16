@@ -15,10 +15,11 @@ export class PlaylistService {
 
   // RÚBRICA #9 — GET: obtener playlists del usuario (conectado a MySQL)
   getPlaylists() {
-    return this.http.get<Playlist[]>(
-      `${environment.apiUrl}/playlists`
-    );
-  }
+  return this.http.get<{ playlists: Playlist[] }>(
+    `${environment.apiUrl}/playlists`,
+    { headers: { 'Cache-Control': 'no-cache' } }
+  );
+}
 
   // RÚBRICA #9 — POST: crear playlist (conectado a MySQL)
   createPlaylist(data: { name: string; description: string }) {
@@ -36,11 +37,12 @@ export class PlaylistService {
   }
 
   // RÚBRICA #9 — GET: canciones de una playlist (conectado a MySQL)
-  getPlaylistSongs(playlistId: number) {
-    return this.http.get<PlaylistSong[]>(
-      `${environment.apiUrl}/playlists/${playlistId}/songs`
-    );
-  }
+ getPlaylistSongs(playlistId: number) {
+  return this.http.get<{ songs: PlaylistSong[] }>(
+    `${environment.apiUrl}/playlists/${playlistId}/songs`,
+    { headers: { 'Cache-Control': 'no-cache' } }
+  );
+}
 
   // RÚBRICA #9 — POST: agregar canción a playlist (conectado a MySQL)
   addSong(playlistId: number, song: {

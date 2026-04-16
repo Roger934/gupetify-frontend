@@ -32,11 +32,10 @@ export class PlayerService {
       }
     });
 
-    // Cuando termina la canción, resetea el estado
-    this.audio.addEventListener('ended', () => {
-      this.isPlaying.set(false);
-      this.progress.set(0);
-    });
+    // Cuando termina la canción, pasa a la siguiente de la queue
+this.audio.addEventListener('ended', () => {
+  this.playNext();
+});
   }
 
   // Recibe tanto Track (Deezer) como PlaylistSong (MySQL)
@@ -102,4 +101,29 @@ export class PlayerService {
   getCover(track: Track | PlaylistSong): string {
     return 'album' in track ? track.album.cover_medium : track.cover_url;
   }
+
+
+
+  // RÚBRICA #15 — Signals: queue de reproducción
+queue = signal<(Track | PlaylistSong)[]>([]);
+queueIndex = signal<number>(0);
+
+setQueue(songs: (Track | PlaylistSong)[], startIndex: number = 0) {
+  this.queue.set(songs);
+  this.queueIndex.set(startIndex);
+}
+
+// Autoplay — pasa a la siguiente canción automáticamente
+private playNext() {
+  const songs = this.queue();
+  const nextIndex = this.queueIndex() + 1;
+  if (nextIndex < songs.length) {
+    this.queueIndex.set(nextIndex);
+    this.play(songs[nextIndex]);
+  } else {
+    // Fin de la queue
+    this.isPlaying.set(false);
+    this.progress.set(0);
+  }
+}
 }

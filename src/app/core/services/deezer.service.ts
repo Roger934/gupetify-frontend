@@ -43,4 +43,10 @@ getGenreArtists(genreId: number) {
     `${environment.apiUrl}/deezer/genre/${genreId}/artists`
   );
 }
+
+getArtistById(id: number) {
+  return this.http.get<Artist>(
+    `${environment.apiUrl}/deezer/artist/${id}`
+  );
+}
 }

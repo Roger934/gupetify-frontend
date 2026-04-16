@@ -1,1 +1,121 @@
-<p>playlist-detail works!</p>
+<div class="px-8 py-10">
+
+  <!-- Botón volver -->
+  <button
+    (click)="goBack()"
+    class="text-[#A0A0A0] hover:text-white transition-colors mb-6
+           flex items-center gap-2">
+    ← Volver a playlists
+  </button>
+
+  <!-- Loading -->
+  @if (loading) {
+    <div class="flex justify-center py-20">
+      <div class="w-10 h-10 border-4 border-[#FACD3D] border-t-transparent
+                  rounded-full animate-spin"></div>
+    </div>
+  }
+
+  @if (!loading && playlist) {
+
+    <!-- Header playlist -->
+    <div class="flex items-center gap-8 mb-10">
+      <div class="w-40 h-40 bg-[#242424] rounded-xl
+                  flex items-center justify-center flex-shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"
+             viewBox="0 0 24 24" fill="none"
+             stroke="#FACD3D" stroke-width="1.5">
+          <path d="M9 18V5l12-2v13"/>
+          <circle cx="6" cy="18" r="3"/>
+          <circle cx="18" cy="16" r="3"/>
+        </svg>
+      </div>
+      <div>
+        <!-- RÚBRICA #7 — Interpolación {{ }} -->
+        <p class="text-[#A0A0A0] text-sm mb-1">Playlist</p>
+        <h1 class="text-white text-4xl font-bold mb-2">{{ playlist.name }}</h1>
+        @if (playlist.description) {
+          <p class="text-[#A0A0A0]">{{ playlist.description }}</p>
+        }
+        <p class="text-[#A0A0A0] text-sm mt-2">{{ songs.length }} canciones</p>
+      </div>
+    </div>
+
+    <!-- Botón reproducir todo -->
+    @if (songs.length > 0) {
+      <button
+        (click)="playFromIndex(0)"
+        class="mb-6 px-6 py-3 bg-[#FACD3D] text-black font-semibold
+               rounded-full hover:bg-yellow-300 transition-colors
+               flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+             viewBox="0 0 24 24" fill="black">
+          <polygon points="5,3 19,12 5,21"/>
+        </svg>
+        Reproducir todo
+      </button>
+    }
+
+    <!-- Sin canciones -->
+    @if (songs.length === 0) {
+      <div class="text-center py-20">
+        <p class="text-[#A0A0A0] text-lg">Esta playlist está vacía</p>
+        <p class="text-[#535353] text-sm mt-2">
+          Agrega canciones desde Explorar
+        </p>
+      </div>
+    }
+
+    <!-- Lista de canciones -->
+    <!-- RÚBRICA #5 — @for en lugar de *ngFor -->
+    <!-- RÚBRICA #10 — @Input y @Output en TrackCard -->
+    <div class="bg-[#1A1A1A] rounded-xl overflow-hidden">
+      @for (song of songs; track song.id; let i = $index) {
+        <div class="flex items-center group">
+
+          <!-- Número de canción -->
+          <span class="text-[#A0A0A0] text-sm w-10 text-center
+                       group-hover:hidden">
+            {{ i + 1 }}
+          </span>
+
+          <!-- Play al hover -->
+          <button
+            (click)="playFromIndex(i)"
+            class="w-10 hidden group-hover:flex items-center
+                   justify-center text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                 viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5,3 19,12 5,21"/>
+            </svg>
+          </button>
+
+          <!-- TrackCard ocupa el resto -->
+          <div class="flex-1">
+            <app-track-card
+              [track]="song"
+              [showAddButton]="false"
+            />
+          </div>
+
+          <!-- Botón eliminar -->
+          <button
+            (click)="deleteSong(song.id)"
+            class="opacity-0 group-hover:opacity-100 transition-opacity
+                   text-[#A0A0A0] hover:text-red-400 px-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                 viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14H6L5 6"/>
+              <path d="M10 11v6M14 11v6"/>
+              <path d="M9 6V4h6v2"/>
+            </svg>
+          </button>
+
+        </div>
+      }
+    </div>
+  }
+
+</div>

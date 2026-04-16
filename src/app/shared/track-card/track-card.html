@@ -1,9 +1,10 @@
+<!-- Click en toda la fila para reproducir -->
 <div class="flex items-center gap-3 px-4 py-2 rounded-lg
-            hover:bg-[#242424] transition-colors group"
-     [class.bg-[#242424]]="isCurrentTrack">
+            hover:bg-[#242424] transition-colors group cursor-pointer"
+     [class.bg-[#242424]]="isCurrentTrack"
+     (click)="player.play(track)">
 
-  <!-- Imagen del álbum -->
-  <!-- RÚBRICA #7 — Property binding [src] -->
+  <!-- Imagen del álbum — click para reproducir -->
   <img
     [src]="cover"
     [alt]="title"
@@ -22,34 +23,30 @@
     </span>
   </div>
 
+  <!-- Indicador de reproducción activa -->
+  @if (isCurrentTrack && player.isPlaying()) {
+  <svg xmlns="http://www.w3.org/2000/svg" 
+       width="12" height="12" viewBox="0 0 24 24" 
+       fill="#FACD3D">
+    <polygon points="5,3 19,12 5,21"/>
+  </svg>
+}
+
   <!-- Duración -->
   <!-- RÚBRICA #15 — Pipe personalizado: duration -->
   <span class="text-[#A0A0A0] text-xs">
     {{ duration | duration }}
   </span>
 
-  <!-- Botones -->
-  <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-
-    <!-- Botón agregar a playlist -->
-    <!-- RÚBRICA #5 — @if en lugar de *ngIf -->
-    @if (showAddButton) {
-      <!-- RÚBRICA #7 — Event binding (click) -->
-      <!-- RÚBRICA #10 — @Output: dispara onAddToPlaylist al padre -->
-      <button
-        (click)="addToPlaylist()"
-        class="text-xs px-2 py-1 rounded border border-[#535353]
-               text-[#A0A0A0] hover:text-white hover:border-white transition-colors">
-        + Playlist
-      </button>
-    }
-
-    <!-- Botón play -->
+  <!-- Botón agregar a playlist — se detiene el click para no reproducir -->
+  @if (showAddButton) {
     <button
-      (click)="player.play(track)"
-      class="w-8 h-8 rounded-full bg-[#FACD3D] text-black
-             flex items-center justify-center hover:bg-yellow-300 transition-colors">
-      @if (isCurrentTrack && player.isPlaying()) { ⏸ } @else { ▶ }
+      (click)="$event.stopPropagation(); addToPlaylist()"
+      class="text-xs px-2 py-1 rounded border border-[#535353]
+             text-[#A0A0A0] hover:text-white hover:border-white
+             transition-colors opacity-0 group-hover:opacity-100">
+      + Playlist
     </button>
-  </div>
+  }
+
 </div>

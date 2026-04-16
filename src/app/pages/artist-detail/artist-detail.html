@@ -1,1 +1,95 @@
-<p>artist-detail works!</p>
+<div class="px-8 py-10">
+
+  <!-- Botón volver -->
+  <button
+    (click)="goBack()"
+    class="text-[#A0A0A0] hover:text-white transition-colors mb-6 flex items-center gap-2">
+    ← Volver a explorar
+  </button>
+
+  <!-- Loading artista -->
+  @if (loading) {
+    <div class="flex justify-center py-20">
+      <div class="w-10 h-10 border-4 border-[#FACD3D] border-t-transparent
+                  rounded-full animate-spin"></div>
+    </div>
+  }
+
+  <!-- Info del artista -->
+  @if (!loading && artist) {
+    <div class="flex items-center gap-8 mb-10">
+      <!-- RÚBRICA #7 — Property binding [src] -->
+      <img
+        [src]="artist.picture_xl"
+        [alt]="artist.name"
+        class="w-40 h-40 rounded-full object-cover"
+      />
+      <div>
+        <!-- RÚBRICA #7 — Interpolación {{ }} -->
+        <h1 class="text-white text-4xl font-bold">{{ artist.name }}</h1>
+        @if (artist.nb_fan) {
+          <p class="text-[#A0A0A0] mt-2">{{ artist.nb_fan | number }} fans</p>
+        }
+      </div>
+    </div>
+
+    <!-- Canciones -->
+    <div>
+      <h2 class="text-white text-xl font-semibold mb-4">Canciones populares</h2>
+
+      @if (loadingTracks) {
+        <div class="flex justify-center py-10">
+          <div class="w-8 h-8 border-4 border-[#FACD3D] border-t-transparent
+                      rounded-full animate-spin"></div>
+        </div>
+      }
+
+      <!-- RÚBRICA #5 — @for en lugar de *ngFor -->
+      <!-- RÚBRICA #10 — @Input y @Output en TrackCard -->
+      <div class="bg-[#1A1A1A] rounded-xl overflow-hidden">
+        @for (track of tracks; track track.id) {
+          <app-track-card
+            [track]="track"
+            [showAddButton]="true"
+            (onAddToPlaylist)="openAddToPlaylist($any($event))"
+          />
+        }
+      </div>
+    </div>
+  }
+
+</div>
+
+<!-- Modal agregar a playlist -->
+@if (showPlaylistModal) {
+  <div class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
+    <div class="bg-[#1A1A1A] rounded-2xl p-6 w-96 border border-[#535353]">
+
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-white font-semibold">Agregar a playlist</h3>
+        <button
+          (click)="closeModal()"
+          class="text-[#A0A0A0] hover:text-white transition-colors">
+          ✕
+        </button>
+      </div>
+
+      @if (playlists.length === 0) {
+        <p class="text-[#A0A0A0] text-sm text-center py-4">
+          No tienes playlists aún
+        </p>
+      }
+
+      <!-- RÚBRICA #5 — @for -->
+      @for (playlist of playlists; track playlist.id) {
+        <button
+          (click)="addToPlaylist(playlist)"
+          class="w-full text-left px-4 py-3 rounded-lg hover:bg-[#242424]
+                 transition-colors text-white text-sm border-b border-[#535353]">
+          {{ playlist.name }}
+        </button>
+      }
+
+    </div>
+  </div>
+}

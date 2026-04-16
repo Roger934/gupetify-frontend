@@ -1,1 +1,142 @@
-<p>playlists works!</p>
+<div class="px-8 py-10">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8">
+    <h1 class="text-white text-3xl font-bold">Mis Playlists</h1>
+    <!-- RÚBRICA #7 — Event binding (click) -->
+    <button
+      (click)="showCreateModal = true"
+      class="px-5 py-2.5 bg-[#FACD3D] text-black font-semibold
+             rounded-lg hover:bg-yellow-300 transition-colors flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+           viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Nueva playlist
+    </button>
+  </div>
+
+  <!-- Loading -->
+  @if (loading) {
+    <div class="flex justify-center py-20">
+      <div class="w-10 h-10 border-4 border-[#FACD3D] border-t-transparent
+                  rounded-full animate-spin"></div>
+    </div>
+  }
+
+  <!-- Sin playlists -->
+  @if (!loading && playlists.length === 0) {
+    <div class="text-center py-20">
+      <p class="text-[#A0A0A0] text-lg">No tienes playlists aún</p>
+      <p class="text-[#535353] text-sm mt-2">Crea una para empezar</p>
+    </div>
+  }
+
+  <!-- Lista de playlists -->
+  <!-- RÚBRICA #5 — @for en lugar de *ngFor -->
+  @if (!loading && playlists.length > 0) {
+    <div class="grid grid-cols-4 gap-4">
+      @for (playlist of playlists; track playlist.id) {
+        <div
+          (click)="goToPlaylist(playlist.id)"
+          class="bg-[#1A1A1A] rounded-xl p-5 cursor-pointer
+                 hover:bg-[#242424] transition-colors group relative">
+
+          <!-- Ícono playlist -->
+          <div class="w-full aspect-square bg-[#242424] rounded-lg mb-4
+                      flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+                 viewBox="0 0 24 24" fill="none"
+                 stroke="#FACD3D" stroke-width="1.5">
+              <path d="M9 18V5l12-2v13"/>
+              <circle cx="6" cy="18" r="3"/>
+              <circle cx="18" cy="16" r="3"/>
+            </svg>
+          </div>
+
+          <!-- Info -->
+          <!-- RÚBRICA #7 — Interpolación {{ }} -->
+          <p class="text-white font-semibold truncate">{{ playlist.name }}</p>
+          <p class="text-[#A0A0A0] text-xs mt-1 truncate">
+            {{ playlist.description || 'Sin descripción' }}
+          </p>
+
+          <!-- Botón eliminar -->
+          <button
+            (click)="deletePlaylist(playlist.id, $event)"
+            class="absolute top-3 right-3 opacity-0 group-hover:opacity-100
+                   transition-opacity text-[#A0A0A0] hover:text-red-400 p-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14H6L5 6"/>
+              <path d="M10 11v6M14 11v6"/>
+              <path d="M9 6V4h6v2"/>
+            </svg>
+          </button>
+
+        </div>
+      }
+    </div>
+  }
+
+</div>
+
+<!-- Modal crear playlist -->
+@if (showCreateModal) {
+  <div class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
+    <div class="bg-[#1A1A1A] rounded-2xl p-6 w-96 border border-[#535353]">
+
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="text-white font-semibold text-lg">Nueva playlist</h3>
+        <button
+          (click)="closeModal()"
+          class="text-[#A0A0A0] hover:text-white transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- RÚBRICA #7 — Two-way binding [(ngModel)] -->
+      <input
+        type="text"
+        [(ngModel)]="newName"
+        placeholder="Nombre de la playlist"
+        class="w-full bg-[#242424] border border-[#535353] rounded-lg
+               px-4 py-3 text-white text-sm outline-none
+               focus:border-[#FACD3D] transition-colors mb-3"
+      />
+
+      <textarea
+        [(ngModel)]="newDescription"
+        placeholder="Descripción (opcional)"
+        rows="3"
+        class="w-full bg-[#242424] border border-[#535353] rounded-lg
+               px-4 py-3 text-white text-sm outline-none
+               focus:border-[#FACD3D] transition-colors mb-5 resize-none"
+      ></textarea>
+
+      <div class="flex gap-3">
+        <button
+          (click)="closeModal()"
+          class="flex-1 py-2.5 border border-[#535353] text-white
+                 rounded-lg hover:border-white transition-colors text-sm">
+          Cancelar
+        </button>
+        <button
+          (click)="createPlaylist()"
+          [disabled]="!newName.trim()"
+          class="flex-1 py-2.5 bg-[#FACD3D] text-black font-semibold
+                 rounded-lg hover:bg-yellow-300 transition-colors text-sm
+                 disabled:opacity-50 disabled:cursor-not-allowed">
+          Crear
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

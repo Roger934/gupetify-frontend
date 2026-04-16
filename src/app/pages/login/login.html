@@ -72,6 +72,9 @@
         }
       </div>
 
+
+
+
       <!-- Botón submit -->
       <!-- RÚBRICA #7 — Property binding [disabled] -->
       <button
@@ -82,6 +85,12 @@
                disabled:cursor-not-allowed">
         @if (loading) { Iniciando sesión... } @else { Iniciar sesión }
       </button>
+
+            <!-- Mensaje de error inline -->
+      <!-- Mensaje de error inline -->
+@if (errorMessage) {
+  <p class="text-red-400 text-sm mb-4">{{ errorMessage }}</p>
+}
 
     </form>
 

@@ -27,21 +27,23 @@ export class Login {
   email: string = '';
   password: string = '';
   loading: boolean = false;
+  errorMessage: string = '';
 
   // RÚBRICA #11d — Navegación programática tras login
   onSubmit() {
-    this.loading = true;
-    this.auth.login({ email: this.email, password: this.password }).subscribe({
-      next: (res) => {
-        this.auth.saveSession(res);
-        this.toast.show(`Bienvenido ${res.user.username}`, 'success');
-        // RÚBRICA #11d — Navegación programática
-        this.router.navigate(['/']);
-      },
-      error: (err) => {
-        this.toast.show(err.error?.message || 'Credenciales incorrectas', 'error');
-        this.loading = false;
-      }
-    });
-  }
+  this.loading = true;
+  this.errorMessage = '';
+  this.auth.login({ email: this.email, password: this.password }).subscribe({
+    next: (res) => {
+      this.auth.saveSession(res);
+      this.toast.show(`Bienvenido ${res.user.username}`, 'success');
+      this.router.navigate(['/']);
+    },
+    error: (err) => {
+      // ← error inline, sin toast
+      this.errorMessage = err.error?.message || 'Credenciales incorrectas';
+      this.loading = false;
+    }
+  });
+}
 }

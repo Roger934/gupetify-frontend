@@ -26,11 +26,28 @@
     <!-- Botón play/pause -->
     <!-- RÚBRICA #7 — Event binding (click) -->
     <button
-      (click)="player.togglePlay()"
-      class="w-10 h-10 rounded-full bg-[#FACD3D] text-black
-             flex items-center justify-center hover:bg-yellow-300 transition-colors">
-      @if (player.isPlaying()) { ⏸ } @else { ▶ }
-    </button>
+  (click)="player.togglePlay()"
+  class="w-10 h-10 rounded-full bg-[#FACD3D] text-black
+         flex items-center justify-center hover:bg-yellow-300 transition-colors">
+
+  @if (player.isPlaying()) {
+    <!-- Pausa -->
+    <svg xmlns="http://www.w3.org/2000/svg"
+         width="16" height="16" viewBox="0 0 24 24"
+         fill="black">
+      <rect x="5" y="3" width="4" height="18"/>
+      <rect x="15" y="3" width="4" height="18"/>
+    </svg>
+  } @else {
+    <!-- Play -->
+    <svg xmlns="http://www.w3.org/2000/svg"
+         width="16" height="16" viewBox="0 0 24 24"
+         fill="black">
+      <polygon points="5,3 19,12 5,21"/>
+    </svg>
+  }
+
+</button>
 
     <!-- Barra de progreso -->
     <!-- RÚBRICA #7 — Property binding [value] y Event binding (input) -->
@@ -57,9 +74,14 @@
 
     <!-- Botón cerrar -->
     <button
-      (click)="player.stop()"
-      class="text-[#A0A0A0] hover:text-white transition-colors">
-      ✕
-    </button>
+  (click)="player.stop()"
+  class="text-[#A0A0A0] hover:text-white transition-colors">
+  <svg xmlns="http://www.w3.org/2000/svg"
+       width="14" height="14" viewBox="0 0 24 24"
+       fill="none" stroke="currentColor" stroke-width="2">
+    <line x1="18" y1="6" x2="6" y2="18"/>
+    <line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+</button>
   </div>
 }
