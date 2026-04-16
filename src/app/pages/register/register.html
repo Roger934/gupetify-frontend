@@ -1,0 +1,118 @@
+<div class="min-h-screen flex items-center justify-center bg-[#111111] px-4">
+  <div class="w-full max-w-md bg-[#1A1A1A] rounded-2xl p-8 border border-[#535353]">
+
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-[#FACD3D] text-3xl font-bold">Gupetify</h1>
+      <p class="text-[#A0A0A0] text-sm mt-2">Crea tu cuenta gratis</p>
+    </div>
+
+    <!-- RÚBRICA #14 — Formulario reactivo con [formGroup] -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <!-- Campo username -->
+      <div class="mb-5">
+        <label class="text-white text-sm font-medium block mb-2">
+          Nombre de usuario
+        </label>
+        <input
+          type="text"
+          formControlName="username"
+          class="w-full bg-[#242424] border border-[#535353] rounded-lg
+                 px-4 py-3 text-white text-sm outline-none
+                 focus:border-[#FACD3D] transition-colors"
+          placeholder="tu_usuario"
+        />
+
+        <!-- RÚBRICA #14 — Mensajes de error por validator -->
+        @if (username?.invalid && username?.touched) {
+          @if (username?.errors?.['required']) {
+            <p class="text-red-400 text-xs mt-1">El usuario es obligatorio</p>
+          }
+          @if (username?.errors?.['minlength']) {
+            <p class="text-red-400 text-xs mt-1">Mínimo 3 caracteres</p>
+          }
+          @if (username?.errors?.['maxlength']) {
+            <p class="text-red-400 text-xs mt-1">Máximo 20 caracteres</p>
+          }
+        }
+      </div>
+
+      <!-- Campo email -->
+      <div class="mb-5">
+        <label class="text-white text-sm font-medium block mb-2">
+          Correo electrónico
+        </label>
+        <input
+          type="email"
+          formControlName="email"
+          class="w-full bg-[#242424] border border-[#535353] rounded-lg
+                 px-4 py-3 text-white text-sm outline-none
+                 focus:border-[#FACD3D] transition-colors"
+          placeholder="tu@email.com"
+        />
+
+        @if (email?.invalid && email?.touched) {
+          @if (email?.errors?.['required']) {
+            <p class="text-red-400 text-xs mt-1">El correo es obligatorio</p>
+          }
+          @if (email?.errors?.['email']) {
+            <p class="text-red-400 text-xs mt-1">Ingresa un correo válido</p>
+          }
+          @if (email?.errors?.['pattern']) {
+            <p class="text-red-400 text-xs mt-1">Formato de correo no válido</p>
+          }
+        }
+      </div>
+
+      <!-- Campo password -->
+      <div class="mb-6">
+        <label class="text-white text-sm font-medium block mb-2">
+          Contraseña
+        </label>
+        <input
+          type="password"
+          formControlName="password"
+          class="w-full bg-[#242424] border border-[#535353] rounded-lg
+                 px-4 py-3 text-white text-sm outline-none
+                 focus:border-[#FACD3D] transition-colors"
+          placeholder="••••••••"
+        />
+
+        @if (password?.invalid && password?.touched) {
+          @if (password?.errors?.['required']) {
+            <p class="text-red-400 text-xs mt-1">La contraseña es obligatoria</p>
+          }
+          @if (password?.errors?.['minlength']) {
+            <p class="text-red-400 text-xs mt-1">Mínimo 6 caracteres</p>
+          }
+          @if (password?.errors?.['pattern']) {
+            <p class="text-red-400 text-xs mt-1">Debe contener letras y números</p>
+          }
+        }
+      </div>
+
+      <!-- Botón submit -->
+      <!-- RÚBRICA #7 — Property binding [disabled] -->
+      <button
+        type="submit"
+        [disabled]="form.invalid || loading"
+        class="w-full bg-[#FACD3D] text-black font-semibold py-3 rounded-lg
+               hover:bg-yellow-300 transition-colors disabled:opacity-50
+               disabled:cursor-not-allowed">
+        @if (loading) { Creando cuenta... } @else { Crear cuenta }
+      </button>
+
+    </form>
+
+    <!-- Link a login -->
+    <p class="text-center text-[#A0A0A0] text-sm mt-6">
+      ¿Ya tienes cuenta?
+      <a routerLink="/login"
+         class="text-[#FACD3D] hover:underline ml-1">
+        Inicia sesión
+      </a>
+    </p>
+
+  </div>
+</div>

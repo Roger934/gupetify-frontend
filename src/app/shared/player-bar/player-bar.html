@@ -1,0 +1,65 @@
+<!-- RÚBRICA #5 — @if en lugar de *ngIf -->
+@if (player.hasTrack()) {
+  <div class="fixed bottom-0 left-0 right-0 bg-[#1A1A1A]
+              border-t border-[#535353] px-6 py-3 z-50
+              flex items-center gap-4">
+
+    <!-- Imagen del álbum -->
+    <!-- RÚBRICA #7 — Property binding [src] -->
+    <img
+      [src]="player.getCover(player.currentTrack()!)"
+      [alt]="player.getTitle(player.currentTrack()!)"
+      class="w-12 h-12 rounded object-cover"
+    />
+
+    <!-- Info de la canción -->
+    <div class="flex flex-col min-w-32">
+      <!-- RÚBRICA #7 — Interpolación {{ }} -->
+      <span class="text-white text-sm font-medium truncate">
+        {{ player.getTitle(player.currentTrack()!) }}
+      </span>
+      <span class="text-[#A0A0A0] text-xs truncate">
+        {{ player.getArtistName(player.currentTrack()!) }}
+      </span>
+    </div>
+
+    <!-- Botón play/pause -->
+    <!-- RÚBRICA #7 — Event binding (click) -->
+    <button
+      (click)="player.togglePlay()"
+      class="w-10 h-10 rounded-full bg-[#FACD3D] text-black
+             flex items-center justify-center hover:bg-yellow-300 transition-colors">
+      @if (player.isPlaying()) { ⏸ } @else { ▶ }
+    </button>
+
+    <!-- Barra de progreso -->
+    <!-- RÚBRICA #7 — Property binding [value] y Event binding (input) -->
+    <input
+      type="range"
+      min="0"
+      max="1"
+      step="0.01"
+      [value]="player.progress()"
+      (input)="player.seek(+$any($event.target).value)"
+      class="flex-1 accent-[#FACD3D]"
+    />
+
+    <!-- Volumen -->
+    <input
+      type="range"
+      min="0"
+      max="1"
+      step="0.01"
+      [value]="player.volume()"
+      (input)="player.setVolume(+$any($event.target).value)"
+      class="w-24 accent-[#FACD3D]"
+    />
+
+    <!-- Botón cerrar -->
+    <button
+      (click)="player.stop()"
+      class="text-[#A0A0A0] hover:text-white transition-colors">
+      ✕
+    </button>
+  </div>
+}

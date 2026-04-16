@@ -1,0 +1,85 @@
+<div class="px-8 py-10">
+
+  <!-- Bienvenida -->
+  <div class="mb-10">
+    @if (auth.isLoggedIn()) {
+      <h1 class="text-white text-3xl font-bold">
+        Bienvenido, <span class="text-[#FACD3D]">{{ auth.getUser()?.username }}</span>
+      </h1>
+      <p class="text-[#A0A0A0] mt-2">¿Qué quieres escuchar hoy?</p>
+    } @else {
+      <h1 class="text-white text-3xl font-bold">
+        Descubre nueva <span class="text-[#FACD3D]">música</span>
+      </h1>
+      <p class="text-[#A0A0A0] mt-2">Explora artistas, canciones y crea tus playlists</p>
+    }
+  </div>
+
+  <!-- Géneros -->
+  <div class="mb-10">
+    <h2 class="text-white text-xl font-semibold mb-4">Explorar por género</h2>
+
+    <!-- RÚBRICA #5 — @for en lugar de *ngFor -->
+    <div class="grid grid-cols-4 gap-4">
+      @for (genero of generos; track genero.genreId) {
+        <button
+            (click)="goToGenre(genero.nombre)"
+            class="relative rounded-xl overflow-hidden h-32
+            transition-transform hover:scale-105 cursor-pointer">
+
+          <!-- RÚBRICA #7 — Property binding [src] -->
+          <img
+            [src]="genero.imagen"
+            [alt]="genero.nombre"
+            class="absolute inset-0 w-full h-full object-cover"
+          />
+          <div class="absolute inset-0 bg-black/50"></div>
+          <div class="relative z-10 p-4 text-left h-full flex items-end">
+            <!-- RÚBRICA #7 — Interpolación {{ }} -->
+            <p class="text-white font-bold text-lg">{{ genero.nombre }}</p>
+          </div>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- CTA si no está logueado -->
+  @if (!auth.isLoggedIn()) {
+    <div class="bg-[#1A1A1A] border border-[#535353] rounded-2xl p-8
+                flex items-center justify-between">
+      <div>
+        <h3 class="text-white text-xl font-semibold">Crea tus playlists</h3>
+        <p class="text-[#A0A0A0] mt-1">Guarda tus canciones favoritas</p>
+      </div>
+      <div class="flex gap-3">
+        <a routerLink="/register"
+           class="px-6 py-2.5 bg-[#FACD3D] text-black font-semibold
+                  rounded-lg hover:bg-yellow-300 transition-colors">
+          Registrarse
+        </a>
+        <a routerLink="/login"
+           class="px-6 py-2.5 border border-[#535353] text-white
+                  rounded-lg hover:border-white transition-colors">
+          Iniciar sesión
+        </a>
+      </div>
+    </div>
+  }
+
+  <!-- Acceso rápido a playlists si está logueado -->
+  @if (auth.isLoggedIn()) {
+    <div class="bg-[#1A1A1A] border border-[#535353] rounded-2xl p-8
+                flex items-center justify-between">
+      <div>
+        <h3 class="text-white text-xl font-semibold">Mis Playlists</h3>
+        <p class="text-[#A0A0A0] mt-1">Administra tu música guardada</p>
+      </div>
+      <a routerLink="/playlists"
+         class="px-6 py-2.5 bg-[#FACD3D] text-black font-semibold
+                rounded-lg hover:bg-yellow-300 transition-colors">
+        Ver playlists
+      </a>
+    </div>
+  }
+
+</div>

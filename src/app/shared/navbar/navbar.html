@@ -1,0 +1,67 @@
+<!-- RÚBRICA #11e — routerLink y routerLinkActive -->
+<nav class="bg-[#1A1A1A] border-b border-[#535353] px-6 py-3
+            flex items-center justify-between sticky top-0 z-40">
+
+  <!-- Logo -->
+  <a routerLink="/"
+     class="text-[#FACD3D] font-bold text-xl tracking-tight">
+    Gupetify
+  </a>
+
+  <!-- Links de navegación -->
+  <div class="flex items-center gap-6">
+    <a routerLink="/"
+       routerLinkActive="text-[#FACD3D]"
+       [routerLinkActiveOptions]="{ exact: true }"
+       class="text-[#A0A0A0] hover:text-white transition-colors text-sm">
+      Inicio
+    </a>
+
+    <a routerLink="/explore"
+       routerLinkActive="text-[#FACD3D]"
+       class="text-[#A0A0A0] hover:text-white transition-colors text-sm">
+      Explorar
+    </a>
+
+    <!-- RÚBRICA #5 — @if en lugar de *ngIf -->
+    @if (auth.isLoggedIn()) {
+      <a routerLink="/playlists"
+         routerLinkActive="text-[#FACD3D]"
+         class="text-[#A0A0A0] hover:text-white transition-colors text-sm">
+        Mis Playlists
+      </a>
+    }
+  </div>
+
+  <!-- Lado derecho -->
+  <div class="flex items-center gap-3">
+
+    @if (auth.isLoggedIn()) {
+      <!-- RÚBRICA #7 — Interpolación {{ }} -->
+      <span class="text-[#A0A0A0] text-sm">
+        {{ auth.getUser()?.username }}
+      </span>
+
+      <!-- RÚBRICA #7 — Event binding (click) -->
+      <button
+        (click)="logout()"
+        class="text-sm px-4 py-1.5 rounded-lg border border-[#535353]
+               text-[#A0A0A0] hover:text-white hover:border-white transition-colors">
+        Salir
+      </button>
+
+    } @else {
+      <a routerLink="/login"
+         class="text-sm px-4 py-1.5 rounded-lg border border-[#535353]
+                text-[#A0A0A0] hover:text-white hover:border-white transition-colors">
+        Iniciar sesión
+      </a>
+
+      <a routerLink="/register"
+         class="text-sm px-4 py-1.5 rounded-lg bg-[#FACD3D]
+                text-black font-medium hover:bg-yellow-300 transition-colors">
+        Registrarse
+      </a>
+    }
+  </div>
+</nav>

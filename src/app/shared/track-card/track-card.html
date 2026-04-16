@@ -1,0 +1,55 @@
+<div class="flex items-center gap-3 px-4 py-2 rounded-lg
+            hover:bg-[#242424] transition-colors group"
+     [class.bg-[#242424]]="isCurrentTrack">
+
+  <!-- Imagen del álbum -->
+  <!-- RÚBRICA #7 — Property binding [src] -->
+  <img
+    [src]="cover"
+    [alt]="title"
+    class="w-10 h-10 rounded object-cover flex-shrink-0"
+  />
+
+  <!-- Info -->
+  <div class="flex flex-col flex-1 min-w-0">
+    <!-- RÚBRICA #7 — Interpolación {{ }} -->
+    <span class="text-white text-sm font-medium truncate"
+          [class.text-[#FACD3D]]="isCurrentTrack">
+      {{ title }}
+    </span>
+    <span class="text-[#A0A0A0] text-xs truncate">
+      {{ artistName }}
+    </span>
+  </div>
+
+  <!-- Duración -->
+  <!-- RÚBRICA #15 — Pipe personalizado: duration -->
+  <span class="text-[#A0A0A0] text-xs">
+    {{ duration | duration }}
+  </span>
+
+  <!-- Botones -->
+  <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+
+    <!-- Botón agregar a playlist -->
+    <!-- RÚBRICA #5 — @if en lugar de *ngIf -->
+    @if (showAddButton) {
+      <!-- RÚBRICA #7 — Event binding (click) -->
+      <!-- RÚBRICA #10 — @Output: dispara onAddToPlaylist al padre -->
+      <button
+        (click)="addToPlaylist()"
+        class="text-xs px-2 py-1 rounded border border-[#535353]
+               text-[#A0A0A0] hover:text-white hover:border-white transition-colors">
+        + Playlist
+      </button>
+    }
+
+    <!-- Botón play -->
+    <button
+      (click)="player.play(track)"
+      class="w-8 h-8 rounded-full bg-[#FACD3D] text-black
+             flex items-center justify-center hover:bg-yellow-300 transition-colors">
+      @if (isCurrentTrack && player.isPlaying()) { ⏸ } @else { ▶ }
+    </button>
+  </div>
+</div>

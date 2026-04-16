@@ -1,1 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+@theme {
+  --color-gupetify-bg: #111111;
+  --color-gupetify-card: #1A1A1A;
+  --color-gupetify-card2: #242424;
+  --color-gupetify-accent: #FACD3D;
+  --color-gupetify-text: #FFFFFF;
+  --color-gupetify-muted: #A0A0A0;
+  --color-gupetify-border: #535353;
+}

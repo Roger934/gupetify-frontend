@@ -1,0 +1,99 @@
+<div class="min-h-screen flex items-center justify-center bg-[#111111] px-4">
+  <div class="w-full max-w-md bg-[#1A1A1A] rounded-2xl p-8 border border-[#535353]">
+
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-[#FACD3D] text-3xl font-bold">Gupetify</h1>
+      <p class="text-[#A0A0A0] text-sm mt-2">Inicia sesión para continuar</p>
+    </div>
+
+    <!-- RÚBRICA #13 — Formulario template-driven con #loginForm="ngForm" -->
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
+
+      <!-- Campo email -->
+      <div class="mb-5">
+        <label class="text-white text-sm font-medium block mb-2">
+          Correo electrónico
+        </label>
+        <!--RÚBRICA 7 — Two-way binding -->
+        <input
+          type="email"
+          name="email"
+          id="email"
+          
+          [(ngModel)]="email"
+          #emailField="ngModel"
+          required
+          email
+          class="w-full bg-[#242424] border border-[#535353] rounded-lg
+                 px-4 py-3 text-white text-sm outline-none
+                 focus:border-[#FACD3D] transition-colors"
+          placeholder="tu@email.com"
+        />
+
+        <!-- RÚBRICA #13 — Mensajes de error template-driven -->
+        @if (emailField.invalid && emailField.touched) {
+          @if (emailField.errors?.['required']) {
+            <p class="text-red-400 text-xs mt-1">El correo es obligatorio</p>
+          }
+          @if (emailField.errors?.['email']) {
+            <p class="text-red-400 text-xs mt-1">Ingresa un correo válido</p>
+          }
+        }
+      </div>
+
+      <!-- Campo password -->
+      <div class="mb-6">
+        <label class="text-white text-sm font-medium block mb-2">
+          Contraseña
+        </label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          [(ngModel)]="password"
+          #passwordField="ngModel"
+          required
+          minlength="6"
+          class="w-full bg-[#242424] border border-[#535353] rounded-lg
+                 px-4 py-3 text-white text-sm outline-none
+                 focus:border-[#FACD3D] transition-colors"
+          placeholder="••••••••"
+        />
+
+        <!-- RÚBRICA #13 — Mensajes de error -->
+        @if (passwordField.invalid && passwordField.touched) {
+          @if (passwordField.errors?.['required']) {
+            <p class="text-red-400 text-xs mt-1">La contraseña es obligatoria</p>
+          }
+          @if (passwordField.errors?.['minlength']) {
+            <p class="text-red-400 text-xs mt-1">Mínimo 6 caracteres</p>
+          }
+        }
+      </div>
+
+      <!-- Botón submit -->
+      <!-- RÚBRICA #7 — Property binding [disabled] -->
+      <button
+        type="submit"
+        [disabled]="loginForm.invalid || loading"
+        class="w-full bg-[#FACD3D] text-black font-semibold py-3 rounded-lg
+               hover:bg-yellow-300 transition-colors disabled:opacity-50
+               disabled:cursor-not-allowed">
+        @if (loading) { Iniciando sesión... } @else { Iniciar sesión }
+      </button>
+
+    </form>
+
+    <!-- Link a registro -->
+    <p class="text-center text-[#A0A0A0] text-sm mt-6">
+      ¿No tienes cuenta?
+      <!-- RÚBRICA #11e — routerLink -->
+      <a routerLink="/register"
+         class="text-[#FACD3D] hover:underline ml-1">
+        Regístrate
+      </a>
+    </p>
+
+  </div>
+</div>
