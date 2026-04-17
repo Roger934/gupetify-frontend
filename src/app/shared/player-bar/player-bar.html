@@ -18,42 +18,18 @@
           </p>
         </div>
         <div class="flex items-center gap-2 relative">
-          <!-- Volumen -->
-          <div class="relative flex items-center justify-center w-9 h-9">
+          <!-- Prev -->
+          @if (player.queue().length > 0) {
             <button
-              (click)="showVolume = !showVolume"
-              class="flex items-center justify-center w-full h-full"
+              (click)="player.playPrevious()"
+              class="w-9 h-9 flex items-center justify-center"
             >
               <svg class="w-5 h-5" fill="white" viewBox="0 0 24 24">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19" />
-                <path d="M15 9a3 3 0 0 1 0 6" />
-                <path d="M18 7a6 6 0 0 1 0 10" />
+                <polygon points="19,20 9,12 19,4" />
+                <line x1="5" y1="4" x2="5" y2="20" stroke="white" stroke-width="2" />
               </svg>
             </button>
-
-            @if (showVolume) {
-              <div class="absolute bottom-12 right-0 bg-[#222] p-3 rounded-lg shadow-lg">
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  [value]="player.volume()"
-                  (input)="player.setVolume(+$any($event.target).value)"
-                  class="accent-[#FACD3D]"
-                  style="writing-mode: vertical-lr; direction: rtl; height: 80px"
-                />
-              </div>
-            }
-          </div>
-
-          <!-- Prev -->
-          <button (click)="player.playPrevious()" class="w-9 h-9 flex items-center justify-center">
-            <svg class="w-5 h-5" fill="white" viewBox="0 0 24 24">
-              <polygon points="19,20 9,12 19,4" />
-              <line x1="5" y1="4" x2="5" y2="20" stroke="white" stroke-width="2" />
-            </svg>
-          </button>
+          }
 
           <!-- Play -->
           <button (click)="player.togglePlay()" class="w-9 h-9 flex items-center justify-center">
@@ -70,15 +46,17 @@
           </button>
 
           <!-- Next -->
-          <button
-            (click)="player.playNextManual()"
-            class="w-9 h-9 flex items-center justify-center"
-          >
-            <svg class="w-5 h-5" fill="white" viewBox="0 0 24 24">
-              <polygon points="5,4 15,12 5,20" />
-              <line x1="19" y1="4" x2="19" y2="20" stroke="white" stroke-width="2" />
-            </svg>
-          </button>
+          @if (player.queue().length > 0) {
+            <button
+              (click)="player.playNextManual()"
+              class="w-9 h-9 flex items-center justify-center"
+            >
+              <svg class="w-5 h-5" fill="white" viewBox="0 0 24 24">
+                <polygon points="5,4 15,12 5,20" />
+                <line x1="19" y1="4" x2="19" y2="20" stroke="white" stroke-width="2" />
+              </svg>
+            </button>
+          }
         </div>
       </div>
       <!-- Progreso -->
@@ -111,15 +89,17 @@
       </div>
       <div class="flex-1 flex flex-col items-center gap-1">
         <div class="flex items-center gap-4">
-          <button
-            (click)="player.playPrevious()"
-            class="text-[#A0A0A0] hover:text-white transition-colors"
-          >
-            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-              <polygon points="19,20 9,12 19,4" />
-              <line x1="5" y1="4" x2="5" y2="20" stroke="currentColor" stroke-width="2" />
-            </svg>
-          </button>
+          @if (player.queue().length > 0) {
+            <button
+              (click)="player.playPrevious()"
+              class="text-[#A0A0A0] hover:text-white transition-colors"
+            >
+              <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                <polygon points="19,20 9,12 19,4" />
+                <line x1="5" y1="4" x2="5" y2="20" stroke="currentColor" stroke-width="2" />
+              </svg>
+            </button>
+          }
           <button
             (click)="player.togglePlay()"
             class="w-10 h-10 rounded-full bg-[#FACD3D] text-black flex items-center justify-center hover:bg-yellow-300 transition-colors"
@@ -148,15 +128,17 @@
             }
           </button>
 
-          <button
-            (click)="player.playNextManual()"
-            class="text-[#A0A0A0] hover:text-white transition-colors"
-          >
-            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-              <polygon points="5,4 15,12 5,20" />
-              <line x1="19" y1="4" x2="19" y2="20" stroke="currentColor" stroke-width="2" />
-            </svg>
-          </button>
+          @if (player.queue().length > 0) {
+            <button
+              (click)="player.playNextManual()"
+              class="text-[#A0A0A0] hover:text-white transition-colors"
+            >
+              <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                <polygon points="5,4 15,12 5,20" />
+                <line x1="19" y1="4" x2="19" y2="20" stroke="currentColor" stroke-width="2" />
+              </svg>
+            </button>
+          }
         </div>
 
         <input
