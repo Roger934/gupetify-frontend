@@ -1,14 +1,17 @@
 // RÚBRICA #8 — Servicio Angular (4to servicio, superamos el mínimo)
 // RÚBRICA #2 — Toda inyección de dependencia con inject()
 // RÚBRICA #15 — Aportación EXTRA #1: Angular Signals
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 
 // RÚBRICA #12 — Uso de interfaces para tipado
 import { Track } from '../interfaces/track.interface';
 import { PlaylistSong } from '../interfaces/playlist.interface';
+import { DeezerService } from './deezer.service';
 
 @Injectable({ providedIn: 'root' })
 export class PlayerService {
+  // RÚBRICA #2 — inject()
+  private deezer = inject(DeezerService);
   // RÚBRICA #15 — Signals: estado reactivo global del reproductor
   // Cualquier componente que los lea se actualiza automáticamente
   currentTrack = signal<Track | PlaylistSong | null>(null);
@@ -46,22 +49,39 @@ export class PlayerService {
 
   // Recibe tanto Track (Deezer) como PlaylistSong (MySQL)
   play(track: Track | PlaylistSong) {
-    const previewUrl = 'preview' in track ? track.preview : track.preview_url;
-
-    // Si es la misma canción, solo hace play/pause
     if (this.currentTrack() === track) {
       this.togglePlay();
       return;
     }
 
-    this.audio.src = previewUrl;
-    this.audio.volume = this.volume();
-    this.audio.play();
-
-    // RÚBRICA #15 — .set() actualiza el signal y notifica a todos los componentes
     this.currentTrack.set(track);
-    this.isPlaying.set(true);
+    this.isPlaying.set(false);
     this.progress.set(0);
+
+    if ('preview' in track) {
+      // Track de Deezer — URL siempre fresca
+      this.audio.src = track.preview;
+      this.audio.volume = this.volume();
+      this.audio.play();
+      this.isPlaying.set(true);
+    } else {
+      // PlaylistSong — pedir URL fresca por deezer_id
+      this.deezer.getTrackPreview(track.deezer_id).subscribe({
+        next: (res) => {
+          this.audio.src = res.preview;
+          this.audio.volume = this.volume();
+          this.audio.play();
+          this.isPlaying.set(true);
+        },
+        error: () => {
+          // Si falla, intentar con la URL guardada
+          this.audio.src = track.preview_url;
+          this.audio.volume = this.volume();
+          this.audio.play();
+          this.isPlaying.set(true);
+        },
+      });
+    }
   }
 
   togglePlay() {

@@ -46,4 +46,9 @@ export class DeezerService {
       `${environment.apiUrl}/deezer/artist/${artistId}/related`,
     );
   }
+  getTrackPreview(deezerId: number) {
+    return this.http.get<{ preview: string }>(
+      `${environment.apiUrl}/deezer/track/${deezerId}/preview`,
+    );
+  }
 }
