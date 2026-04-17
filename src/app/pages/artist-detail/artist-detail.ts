@@ -19,13 +19,12 @@ import { DecimalPipe } from '@angular/common';
   standalone: true,
   imports: [TrackCard, DecimalPipe],
   templateUrl: './artist-detail.html',
-  styleUrl: './artist-detail.css'
+  styleUrl: './artist-detail.css',
 })
 export class ArtistDetail implements OnInit {
-
   // RÚBRICA #2 — inject()
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
+  router = inject(Router);
   private deezer = inject(DeezerService);
   private toast = inject(ToastService);
   private playlistService = inject(PlaylistService);
@@ -39,31 +38,33 @@ export class ArtistDetail implements OnInit {
   loadingTracks = false;
   showPlaylistModal = false;
   selectedTrack: Track | null = null;
+  relatedArtists: Artist[] = [];
 
   ngOnInit() {
     // RÚBRICA #11b — paramMap: lee :id de la URL /artist/:id
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const id = Number(params.get('id'));
       if (id) {
         this.loadArtist(id);
         this.loadTracks(id);
+        this.loadRelatedArtists(id);
       }
     });
   }
 
   loadArtist(id: number) {
-  this.loading = true;
-  // Ahora sí trae el artista correcto por ID directo
-  this.deezer.getArtistById(id).subscribe({
-    next: (artist) => {
-      this.artist = artist;
-      this.loading = false;
-    },
-    error: () => {
-      this.loading = false;
-    }
-  });
-}
+    this.loading = true;
+    // Ahora sí trae el artista correcto por ID directo
+    this.deezer.getArtistById(id).subscribe({
+      next: (artist) => {
+        this.artist = artist;
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      },
+    });
+  }
 
   loadTracks(id: number) {
     this.loadingTracks = true;
@@ -75,7 +76,14 @@ export class ArtistDetail implements OnInit {
       error: () => {
         this.toast.show('Error al cargar canciones', 'error');
         this.loadingTracks = false;
-      }
+      },
+    });
+  }
+
+  loadRelatedArtists(id: number) {
+    this.deezer.getRelatedArtists(id).subscribe({
+      next: (res) => (this.relatedArtists = res.data.slice(0, 6)),
+      error: () => {},
     });
   }
 
@@ -92,34 +100,36 @@ export class ArtistDetail implements OnInit {
   }
 
   loadPlaylists() {
-  this.playlistService.getPlaylists().subscribe({
-    next: (res) => this.playlists = res.playlists,
-    error: () => this.toast.show('Error al cargar playlists', 'error')
-  });
-}
+    this.playlistService.getPlaylists().subscribe({
+      next: (res) => (this.playlists = res.playlists),
+      error: () => this.toast.show('Error al cargar playlists', 'error'),
+    });
+  }
 
   addToPlaylist(playlist: Playlist) {
     if (!this.selectedTrack) return;
     const track = this.selectedTrack;
 
-    this.playlistService.addSong(playlist.id, {
-      deezer_id: track.id,
-      title: track.title,
-      artist_name: track.artist.name,
-      album_title: track.album.title,
-      preview_url: track.preview,
-      cover_url: track.album.cover_medium,
-      duration: track.duration
-    }).subscribe({
-      next: () => {
-        this.toast.show(`Agregada a ${playlist.name}`, 'success');
-        this.showPlaylistModal = false;
-        this.selectedTrack = null;
-      },
-      error: (err) => {
-        this.toast.show(err.error?.message || 'Error al agregar canción', 'error');
-      }
-    });
+    this.playlistService
+      .addSong(playlist.id, {
+        deezer_id: track.id,
+        title: track.title,
+        artist_name: track.artist.name,
+        album_title: track.album.title,
+        preview_url: track.preview,
+        cover_url: track.album.cover_medium,
+        duration: track.duration,
+      })
+      .subscribe({
+        next: () => {
+          this.toast.show(`Agregada a ${playlist.name}`, 'success');
+          this.showPlaylistModal = false;
+          this.selectedTrack = null;
+        },
+        error: (err) => {
+          this.toast.show(err.error?.message || 'Error al agregar canción', 'error');
+        },
+      });
   }
 
   closeModal() {

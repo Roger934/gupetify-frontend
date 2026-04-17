@@ -1,5 +1,4 @@
-<div class="px-8 py-10">
-
+<div class="px-4 md:px-8 py-6 md:py-10">
   <!-- Título dinámico -->
   <div class="mb-6">
     @if (currentGenreName) {
@@ -16,16 +15,15 @@
     <input
       type="text"
       [(ngModel)]="searchQuery"
+      (input)="onSearchInput()"
       (keyup.enter)="search()"
       placeholder="Busca un artista..."
-      class="flex-1 bg-[#1A1A1A] border border-[#535353] rounded-xl
-             px-5 py-3 text-white text-sm outline-none
-             focus:border-[#FACD3D] transition-colors"
+      class="flex-1 bg-[#1A1A1A] border border-[#535353] rounded-xl px-5 py-3 text-white text-sm outline-none focus:border-[#FACD3D] transition-colors"
     />
     <button
       (click)="search()"
-      class="px-6 py-3 bg-[#FACD3D] text-black font-semibold
-             rounded-xl hover:bg-yellow-300 transition-colors">
+      class="px-6 py-3 bg-[#FACD3D] text-black font-semibold rounded-xl hover:bg-yellow-300 transition-colors"
+    >
       Buscar
     </button>
   </div>
@@ -33,29 +31,26 @@
   <!-- Loading -->
   @if (loading) {
     <div class="flex justify-center py-20">
-      <div class="w-10 h-10 border-4 border-[#FACD3D] border-t-transparent
-                  rounded-full animate-spin"></div>
+      <div
+        class="w-10 h-10 border-4 border-[#FACD3D] border-t-transparent rounded-full animate-spin"
+      ></div>
     </div>
   }
 
   <!-- Resultados -->
   @if (!loading && artists.length > 0) {
-    <div class="grid grid-cols-5 gap-4">
-      <!-- RÚBRICA #5 — @for en lugar de *ngFor -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
       @for (artist of artists; track artist.id) {
         <div
           (click)="goToArtist(artist.id)"
-          class="bg-[#1A1A1A] rounded-xl p-4 cursor-pointer
-                 hover:bg-[#242424] transition-colors text-center">
-
-          <!-- RÚBRICA #7 — Property binding [src] -->
+          class="bg-[#1A1A1A] rounded-xl p-4 cursor-pointer hover:bg-[#242424] transition-colors text-center"
+        >
           <img
             [src]="artist.picture_medium"
             [alt]="artist.name"
             class="w-full aspect-square object-cover rounded-full mb-3"
           />
 
-          <!-- RÚBRICA #7 — Interpolación {{ }} -->
           <p class="text-white text-sm font-medium truncate">
             {{ artist.name }}
           </p>
@@ -71,5 +66,4 @@
       <p class="text-[#535353] text-sm mt-2">Intenta con otro término</p>
     </div>
   }
-
 </div>

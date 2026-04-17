@@ -4,26 +4,23 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
-
-// RÚBRICA #12 — Uso de interfaces para tipado
 import { AuthResponse, User } from '../interfaces/user.interface';
+import { PlayerService } from './player.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-
-  // RÚBRICA #2 — inject() en lugar de constructor para dependencias
+  // RÚBRICA #2 — inject()
   private http = inject(HttpClient);
   private router = inject(Router);
+  private player = inject(PlayerService);
 
   private readonly TOKEN_KEY = 'gupetify_token';
   private readonly USER_KEY = 'gupetify_user';
 
-  // RÚBRICA #9 — Llamada a API del backend con POST (register)
   register(data: { username: string; email: string; password: string }) {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/register`, data);
   }
 
-  // RÚBRICA #9 — Llamada a API del backend con POST (login)
   login(data: { email: string; password: string }) {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, data);
   }
@@ -35,6 +32,8 @@ export class AuthService {
 
   // RÚBRICA #11d — Navegación programática tras logout
   logout() {
+    // Detener reproducción al cerrar sesión
+    this.player.stop();
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
     this.router.navigate(['/login']);

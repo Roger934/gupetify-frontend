@@ -9,13 +9,17 @@ import { PlaylistSong } from '../interfaces/playlist.interface';
 
 @Injectable({ providedIn: 'root' })
 export class PlayerService {
-
   // RÚBRICA #15 — Signals: estado reactivo global del reproductor
   // Cualquier componente que los lea se actualiza automáticamente
   currentTrack = signal<Track | PlaylistSong | null>(null);
   isPlaying = signal<boolean>(false);
   progress = signal<number>(0);
-  volume = signal<number>(1);
+  volume = signal<number>(this.getSavedVolume());
+
+  private getSavedVolume(): number {
+    const saved = localStorage.getItem('gupetify_volume');
+    return saved ? parseFloat(saved) : 0.5; // default 50%
+  }
 
   // RÚBRICA #15 — computed(): valor derivado de otros signals
   // Se recalcula automáticamente cuando currentTrack cambia
@@ -25,6 +29,8 @@ export class PlayerService {
   private audio = new Audio();
 
   constructor() {
+    // Aplicar volumen guardado al iniciar
+    this.audio.volume = this.getSavedVolume();
     // Actualiza el progreso en tiempo real mientras reproduce
     this.audio.addEventListener('timeupdate', () => {
       if (this.audio.duration) {
@@ -33,9 +39,9 @@ export class PlayerService {
     });
 
     // Cuando termina la canción, pasa a la siguiente de la queue
-this.audio.addEventListener('ended', () => {
-  this.playNext();
-});
+    this.audio.addEventListener('ended', () => {
+      this.playNext();
+    });
   }
 
   // Recibe tanto Track (Deezer) como PlaylistSong (MySQL)
@@ -77,6 +83,8 @@ this.audio.addEventListener('ended', () => {
   setVolume(value: number) {
     this.audio.volume = value;
     this.volume.set(value);
+    // Guardar preferencia en localStorage
+    localStorage.setItem('gupetify_volume', value.toString());
   }
 
   stop() {
@@ -102,28 +110,48 @@ this.audio.addEventListener('ended', () => {
     return 'album' in track ? track.album.cover_medium : track.cover_url;
   }
 
-
-
   // RÚBRICA #15 — Signals: queue de reproducción
-queue = signal<(Track | PlaylistSong)[]>([]);
-queueIndex = signal<number>(0);
+  queue = signal<(Track | PlaylistSong)[]>([]);
+  queueIndex = signal<number>(0);
 
-setQueue(songs: (Track | PlaylistSong)[], startIndex: number = 0) {
-  this.queue.set(songs);
-  this.queueIndex.set(startIndex);
-}
-
-// Autoplay — pasa a la siguiente canción automáticamente
-private playNext() {
-  const songs = this.queue();
-  const nextIndex = this.queueIndex() + 1;
-  if (nextIndex < songs.length) {
-    this.queueIndex.set(nextIndex);
-    this.play(songs[nextIndex]);
-  } else {
-    // Fin de la queue
-    this.isPlaying.set(false);
-    this.progress.set(0);
+  setQueue(songs: (Track | PlaylistSong)[], startIndex: number = 0) {
+    this.queue.set(songs);
+    this.queueIndex.set(startIndex);
   }
-}
+
+  // Autoplay — pasa a la siguiente canción automáticamente
+  private playNext() {
+    const songs = this.queue();
+    const nextIndex = this.queueIndex() + 1;
+    if (nextIndex < songs.length) {
+      this.queueIndex.set(nextIndex);
+      this.play(songs[nextIndex]);
+    } else {
+      // Fin de la queue
+      this.isPlaying.set(false);
+      this.progress.set(0);
+    }
+  }
+
+  playPrevious() {
+    const songs = this.queue();
+    const prevIndex = this.queueIndex() - 1;
+    if (prevIndex >= 0) {
+      this.queueIndex.set(prevIndex);
+      this.play(songs[prevIndex]);
+    } else {
+      // Si es la primera canción, reinicia desde el inicio
+      this.audio.currentTime = 0;
+      this.progress.set(0);
+    }
+  }
+
+  playNextManual() {
+    const songs = this.queue();
+    const nextIndex = this.queueIndex() + 1;
+    if (nextIndex < songs.length) {
+      this.queueIndex.set(nextIndex);
+      this.play(songs[nextIndex]);
+    }
+  }
 }

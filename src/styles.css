@@ -1,12 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --color-gupetify-bg: #111111;
-  --color-gupetify-card: #1A1A1A;
+  --color-gupetify-card: #1a1a1a;
   --color-gupetify-card2: #242424;
-  --color-gupetify-accent: #FACD3D;
-  --color-gupetify-text: #FFFFFF;
-  --color-gupetify-muted: #A0A0A0;
+  --color-gupetify-accent: #facd3d;
+  --color-gupetify-text: #ffffff;
+  --color-gupetify-muted: #a0a0a0;
   --color-gupetify-border: #535353;
+}
+* {
+  font-family: 'Figtree', sans-serif;
 }

@@ -1,21 +1,14 @@
-<!-- Click en toda la fila para reproducir -->
-<div class="flex items-center gap-3 px-4 py-2 rounded-lg
-            hover:bg-[#242424] transition-colors group cursor-pointer"
-     [class.bg-[#242424]]="isCurrentTrack"
-     (click)="player.play(track)">
-
-  <!-- Imagen del álbum — click para reproducir -->
-  <img
-    [src]="cover"
-    [alt]="title"
-    class="w-10 h-10 rounded object-cover flex-shrink-0"
-  />
+<div
+  class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-[#242424] transition-colors group cursor-pointer overflow-hidden min-w-0"
+  [class.bg-[#242424]]="isCurrentTrack"
+  (click)="player.play(track)"
+>
+  <!-- Cover -->
+  <img [src]="cover" [alt]="title" class="w-10 h-10 rounded object-cover flex-shrink-0" />
 
   <!-- Info -->
   <div class="flex flex-col flex-1 min-w-0">
-    <!-- RÚBRICA #7 — Interpolación {{ }} -->
-    <span class="text-white text-sm font-medium truncate"
-          [class.text-[#FACD3D]]="isCurrentTrack">
+    <span class="text-white text-sm font-medium truncate" [class.text-[#FACD3D]]="isCurrentTrack">
       {{ title }}
     </span>
     <span class="text-[#A0A0A0] text-xs truncate">
@@ -23,30 +16,30 @@
     </span>
   </div>
 
-  <!-- Indicador de reproducción activa -->
+  <!-- Playing icon -->
   @if (isCurrentTrack && player.isPlaying()) {
-  <svg xmlns="http://www.w3.org/2000/svg" 
-       width="12" height="12" viewBox="0 0 24 24" 
-       fill="#FACD3D">
-    <polygon points="5,3 19,12 5,21"/>
-  </svg>
-}
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="w-3 h-3 flex-shrink-0"
+      viewBox="0 0 24 24"
+      fill="#FACD3D"
+    >
+      <polygon points="5,3 19,12 5,21" />
+    </svg>
+  }
 
-  <!-- Duración -->
-  <!-- RÚBRICA #15 — Pipe personalizado: duration -->
-  <span class="text-[#A0A0A0] text-xs">
+  <!-- Duration -->
+  <span class="text-[#A0A0A0] text-xs flex-shrink-0">
     {{ duration | duration }}
   </span>
 
-  <!-- Botón agregar a playlist — se detiene el click para no reproducir -->
+  <!-- Add button -->
   @if (showAddButton) {
     <button
       (click)="$event.stopPropagation(); addToPlaylist()"
-      class="text-xs px-2 py-1 rounded border border-[#535353]
-             text-[#A0A0A0] hover:text-white hover:border-white
-             transition-colors opacity-0 group-hover:opacity-100">
+      class="text-xs px-2 py-1 rounded border border-[#535353] text-[#A0A0A0] hover:text-white hover:border-white transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0"
+    >
       + Playlist
     </button>
   }
-
 </div>

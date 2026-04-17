@@ -15,15 +15,15 @@ import { ToastService } from '../../shared/toast/toast';
   standalone: true,
   imports: [FormsModule],
   templateUrl: './explore.html',
-  styleUrl: './explore.css'
+  styleUrl: './explore.css',
 })
 export class Explore implements OnInit {
-
   // RÚBRICA #2 — inject()
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private deezer = inject(DeezerService);
   private toast = inject(ToastService);
+  private searchTimer: any;
 
   // RÚBRICA #7 — Two-way binding con [(ngModel)]
   searchQuery: string = '';
@@ -32,18 +32,48 @@ export class Explore implements OnInit {
   currentGenreName: string = '';
 
   ngOnInit() {
-  // RÚBRICA #11c — Lee queryParams de la URL
-  this.route.queryParamMap.subscribe(params => {
-    const q = params.get('q');
-    this.artists = [];
+    this.route.queryParamMap.subscribe((params) => {
+      const seedId = params.get('seedId');
+      const q = params.get('q');
+      this.artists = [];
 
-    if (q) {
-      this.searchQuery = q;
-      this.currentGenreName = q;
-      this.searchByText();
+      if (seedId) {
+        // Viene desde Home con género — carga artistas relacionados
+        this.currentGenreName = q || '';
+        this.loadRelatedArtists(Number(seedId));
+      } else if (q) {
+        this.searchQuery = q;
+        this.currentGenreName = q;
+        this.searchByText();
+      }
+    });
+  }
+
+  // Búsqueda en tiempo real con debounce de 400ms
+  onSearchInput() {
+    clearTimeout(this.searchTimer);
+    if (!this.searchQuery.trim()) {
+      this.artists = [];
+      this.currentGenreName = '';
+      return;
     }
-  });
-}
+    this.searchTimer = setTimeout(() => {
+      this.searchByText();
+    }, 400);
+  }
+  loadRelatedArtists(seedId: number) {
+    this.loading = true;
+    this.deezer.getRelatedArtists(seedId).subscribe({
+      next: (res) => {
+        this.artists = res.data;
+        this.loading = false;
+      },
+      error: () => {
+        this.toast.show('Error al cargar artistas', 'error');
+        this.loading = false;
+      },
+    });
+  }
 
   // Carga artistas por género usando el id de Deezer
   loadGenreArtists(genreId: number) {
@@ -58,7 +88,7 @@ export class Explore implements OnInit {
       error: () => {
         this.toast.show('Error al cargar artistas del género', 'error');
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -77,7 +107,7 @@ export class Explore implements OnInit {
       error: () => {
         this.toast.show('Error al buscar artistas', 'error');
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -88,7 +118,7 @@ export class Explore implements OnInit {
     // RÚBRICA #11d — Actualiza queryParams en la URL
     this.router.navigate(['/explore'], {
       queryParams: { q: this.searchQuery },
-      replaceUrl: true
+      replaceUrl: true,
     });
 
     this.searchByText();

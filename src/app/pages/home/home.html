@@ -1,5 +1,4 @@
-<div class="px-8 py-10">
-
+<div class="px-4 md:px-8 py-6 md:py-10">
   <!-- Bienvenida -->
   <div class="mb-10">
     @if (auth.isLoggedIn()) {
@@ -16,70 +15,123 @@
   </div>
 
   <!-- Géneros -->
-  <div class="mb-10">
-    <h2 class="text-white text-xl font-semibold mb-4">Explorar por género</h2>
+  <div
+    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[560px] overflow-hidden sm:max-h-none [&>*]:w-full mb-10"
+  >
+    @for (genero of generos; track genero.nombre) {
+      <button
+        (click)="goToGenre(genero.seedId, genero.nombre)"
+        class="relative rounded-xl overflow-hidden h-32 transition-transform hover:scale-105 cursor-pointer"
+      >
+        <img
+          [src]="genero.imagen"
+          [alt]="genero.nombre"
+          class="absolute inset-0 w-full h-full object-cover"
+        />
 
-    <!-- RÚBRICA #5 — @for en lugar de *ngFor -->
-    <div class="grid grid-cols-4 gap-4">
-      @for (genero of generos; track genero.genreId) {
-        <button
-            (click)="goToGenre(genero.nombre)"
-            class="relative rounded-xl overflow-hidden h-32
-            transition-transform hover:scale-105 cursor-pointer">
+        <div class="absolute inset-0 bg-black/50"></div>
 
-          <!-- RÚBRICA #7 — Property binding [src] -->
-          <img
-            [src]="genero.imagen"
-            [alt]="genero.nombre"
-            class="absolute inset-0 w-full h-full object-cover"
-          />
-          <div class="absolute inset-0 bg-black/50"></div>
-          <div class="relative z-10 p-4 text-left h-full flex items-end">
-            <!-- RÚBRICA #7 — Interpolación {{ }} -->
-            <p class="text-white font-bold text-lg">{{ genero.nombre }}</p>
-          </div>
-        </button>
-      }
-    </div>
+        <!-- 🔥 TEXTO AJUSTADO -->
+        <div class="relative z-10 p-4 text-left h-full flex items-end mb-[5px]">
+          <p class="text-white font-bold text-lg">{{ genero.nombre }}</p>
+        </div>
+      </button>
+    }
   </div>
+
+  <!-- Playlists del usuario -->
+  @if (auth.isLoggedIn() && playlists.length > 0) {
+    <div class="mb-10 mt-16">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-white text-xl font-semibold">Mis Playlists</h2>
+        <a routerLink="/playlists" class="text-[#FACD3D] text-sm hover:underline"> Ver todas </a>
+      </div>
+
+      <!-- ✅ GRID RESPONSIVE -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        @for (playlist of playlists; track playlist.id) {
+          <div
+            (click)="router.navigate(['/playlists', playlist.id])"
+            class="bg-[#1A1A1A] rounded-xl p-3 cursor-pointer hover:bg-[#242424] transition-colors"
+          >
+            <!-- Portadas -->
+            <div class="w-full aspect-square rounded-lg mb-3 overflow-hidden">
+              @if (playlist.covers && playlist.covers.length > 0) {
+                <div class="w-full h-full grid grid-cols-2 grid-rows-2">
+                  @for (cover of getCovers(playlist.covers); track $index) {
+                    <img [src]="cover" class="w-full h-full object-cover" />
+                  }
+                </div>
+              } @else {
+                <div class="w-full h-full bg-[#242424] flex items-center justify-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="30"
+                    height="30"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#FACD3D"
+                    stroke-width="1.5"
+                  >
+                    <path d="M9 18V5l12-2v13" />
+                    <circle cx="6" cy="18" r="3" />
+                    <circle cx="18" cy="16" r="3" />
+                  </svg>
+                </div>
+              }
+            </div>
+
+            <p class="text-white text-xs font-medium truncate">
+              {{ playlist.name }}
+            </p>
+            <p class="text-[#A0A0A0] text-xs truncate">{{ playlist.song_count }} canciones</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
 
   <!-- CTA si no está logueado -->
   @if (!auth.isLoggedIn()) {
-    <div class="bg-[#1A1A1A] border border-[#535353] rounded-2xl p-8
-                flex items-center justify-between">
+    <div
+      class="bg-[#1A1A1A] border border-[#535353] rounded-2xl p-8 flex items-center justify-between"
+    >
       <div>
         <h3 class="text-white text-xl font-semibold">Crea tus playlists</h3>
         <p class="text-[#A0A0A0] mt-1">Guarda tus canciones favoritas</p>
       </div>
       <div class="flex gap-3">
-        <a routerLink="/register"
-           class="px-6 py-2.5 bg-[#FACD3D] text-black font-semibold
-                  rounded-lg hover:bg-yellow-300 transition-colors">
+        <a
+          routerLink="/register"
+          class="px-6 py-2.5 bg-[#FACD3D] text-black font-semibold rounded-lg hover:bg-yellow-300 transition-colors"
+        >
           Registrarse
         </a>
-        <a routerLink="/login"
-           class="px-6 py-2.5 border border-[#535353] text-white
-                  rounded-lg hover:border-white transition-colors">
+        <a
+          routerLink="/login"
+          class="px-6 py-2.5 border border-[#535353] text-white rounded-lg hover:border-white transition-colors"
+        >
           Iniciar sesión
         </a>
       </div>
     </div>
   }
 
-  <!-- Acceso rápido a playlists si está logueado -->
+  <!-- Acceso rápido -->
   @if (auth.isLoggedIn()) {
-    <div class="bg-[#1A1A1A] border border-[#535353] rounded-2xl p-8
-                flex items-center justify-between">
+    <div
+      class="bg-[#1A1A1A] border border-[#535353] rounded-2xl p-8 flex items-center justify-between"
+    >
       <div>
         <h3 class="text-white text-xl font-semibold">Mis Playlists</h3>
         <p class="text-[#A0A0A0] mt-1">Administra tu música guardada</p>
       </div>
-      <a routerLink="/playlists"
-         class="px-6 py-2.5 bg-[#FACD3D] text-black font-semibold
-                rounded-lg hover:bg-yellow-300 transition-colors">
+      <a
+        routerLink="/playlists"
+        class="px-6 py-2.5 bg-[#FACD3D] text-black font-semibold rounded-lg hover:bg-yellow-300 transition-colors"
+      >
         Ver playlists
       </a>
     </div>
   }
-
 </div>

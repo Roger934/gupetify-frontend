@@ -1,32 +1,31 @@
-<div class="px-8 py-10">
-
+<div class="px-4 md:px-8 py-6 md:py-10">
   <!-- Botón volver -->
   <button
     (click)="goBack()"
-    class="text-[#A0A0A0] hover:text-white transition-colors mb-6 flex items-center gap-2">
+    class="text-[#A0A0A0] hover:text-white transition-colors mb-6 flex items-center gap-2"
+  >
     ← Volver a explorar
   </button>
 
   <!-- Loading artista -->
   @if (loading) {
     <div class="flex justify-center py-20">
-      <div class="w-10 h-10 border-4 border-[#FACD3D] border-t-transparent
-                  rounded-full animate-spin"></div>
+      <div
+        class="w-10 h-10 border-4 border-[#FACD3D] border-t-transparent rounded-full animate-spin"
+      ></div>
     </div>
   }
 
   <!-- Info del artista -->
   @if (!loading && artist) {
-    <div class="flex items-center gap-8 mb-10">
-      <!-- RÚBRICA #7 — Property binding [src] -->
+    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-10">
       <img
         [src]="artist.picture_xl"
         [alt]="artist.name"
-        class="w-40 h-40 rounded-full object-cover"
+        class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover flex-shrink-0"
       />
-      <div>
-        <!-- RÚBRICA #7 — Interpolación {{ }} -->
-        <h1 class="text-white text-4xl font-bold">{{ artist.name }}</h1>
+      <div class="text-center sm:text-left">
+        <h1 class="text-white text-3xl md:text-4xl font-bold">{{ artist.name }}</h1>
         @if (artist.nb_fan) {
           <p class="text-[#A0A0A0] mt-2">{{ artist.nb_fan | number }} fans</p>
         }
@@ -39,13 +38,12 @@
 
       @if (loadingTracks) {
         <div class="flex justify-center py-10">
-          <div class="w-8 h-8 border-4 border-[#FACD3D] border-t-transparent
-                      rounded-full animate-spin"></div>
+          <div
+            class="w-8 h-8 border-4 border-[#FACD3D] border-t-transparent rounded-full animate-spin"
+          ></div>
         </div>
       }
 
-      <!-- RÚBRICA #5 — @for en lugar de *ngFor -->
-      <!-- RÚBRICA #10 — @Input y @Output en TrackCard -->
       <div class="bg-[#1A1A1A] rounded-xl overflow-hidden">
         @for (track of tracks; track track.id) {
           <app-track-card
@@ -56,40 +54,56 @@
         }
       </div>
     </div>
-  }
 
+    <!-- Artistas relacionados -->
+    @if (relatedArtists.length > 0) {
+      <div class="mt-10">
+        <h2 class="text-white text-xl font-semibold mb-4">Artistas similares</h2>
+        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+          @for (related of relatedArtists; track related.id) {
+            <div
+              (click)="router.navigate(['/artist', related.id])"
+              class="bg-[#1A1A1A] rounded-xl p-3 md:p-4 cursor-pointer hover:bg-[#242424] transition-colors text-center"
+            >
+              <img
+                [src]="related.picture_medium"
+                [alt]="related.name"
+                class="w-full aspect-square object-cover rounded-full mb-2 md:mb-3"
+              />
+              <p class="text-white text-xs md:text-sm font-medium truncate">
+                {{ related.name }}
+              </p>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
 </div>
 
 <!-- Modal agregar a playlist -->
 @if (showPlaylistModal) {
-  <div class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
-    <div class="bg-[#1A1A1A] rounded-2xl p-6 w-96 border border-[#535353]">
-
+  <div class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center px-4">
+    <div class="bg-[#1A1A1A] rounded-2xl p-6 w-full max-w-sm border border-[#535353]">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-white font-semibold">Agregar a playlist</h3>
-        <button
-          (click)="closeModal()"
-          class="text-[#A0A0A0] hover:text-white transition-colors">
+        <button (click)="closeModal()" class="text-[#A0A0A0] hover:text-white transition-colors">
           ✕
         </button>
       </div>
 
       @if (playlists.length === 0) {
-        <p class="text-[#A0A0A0] text-sm text-center py-4">
-          No tienes playlists aún
-        </p>
+        <p class="text-[#A0A0A0] text-sm text-center py-4">No tienes playlists aún</p>
       }
 
-      <!-- RÚBRICA #5 — @for -->
       @for (playlist of playlists; track playlist.id) {
         <button
           (click)="addToPlaylist(playlist)"
-          class="w-full text-left px-4 py-3 rounded-lg hover:bg-[#242424]
-                 transition-colors text-white text-sm border-b border-[#535353]">
+          class="w-full text-left px-4 py-3 rounded-lg hover:bg-[#242424] transition-colors text-white text-sm border-b border-[#535353]"
+        >
           {{ playlist.name }}
         </button>
       }
-
     </div>
   </div>
 }
