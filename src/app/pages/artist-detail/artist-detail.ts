@@ -13,11 +13,12 @@ import { PlaylistService } from '../../core/services/playlist.service';
 import { Playlist } from '../../core/interfaces/playlist.interface';
 import { AuthService } from '../../core/services/auth.service';
 import { DecimalPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-artist-detail',
   standalone: true,
-  imports: [TrackCard, DecimalPipe],
+  imports: [TrackCard, DecimalPipe, FormsModule],
   templateUrl: './artist-detail.html',
   styleUrl: './artist-detail.css',
 })
@@ -39,6 +40,9 @@ export class ArtistDetail implements OnInit {
   showPlaylistModal = false;
   selectedTrack: Track | null = null;
   relatedArtists: Artist[] = [];
+
+  showNewPlaylistForm = false;
+  newPlaylistName = '';
 
   ngOnInit() {
     // RÚBRICA #11b — paramMap: lee :id de la URL /artist/:id
@@ -129,6 +133,32 @@ export class ArtistDetail implements OnInit {
         error: (err) => {
           this.toast.show(err.error?.message || 'Error al agregar canción', 'error');
         },
+      });
+  }
+
+  createAndAdd() {
+    if (!this.newPlaylistName.trim()) return;
+
+    this.playlistService
+      .createPlaylist({
+        name: this.newPlaylistName,
+        description: '',
+      })
+      .subscribe({
+        next: (res) => {
+          this.toast.show('Playlist creada', 'success');
+          this.newPlaylistName = '';
+          this.showNewPlaylistForm = false;
+          // Recargar playlists y agregar la canción a la nueva
+          this.playlistService.getPlaylists().subscribe({
+            next: (r) => {
+              this.playlists = r.playlists;
+              const nueva = r.playlists.find((p) => p.id === res.id);
+              if (nueva && this.selectedTrack) this.addToPlaylist(nueva);
+            },
+          });
+        },
+        error: () => this.toast.show('Error al crear playlist', 'error'),
       });
   }
 

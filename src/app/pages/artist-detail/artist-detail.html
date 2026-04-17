@@ -104,6 +104,44 @@
           {{ playlist.name }}
         </button>
       }
+
+      <!-- Crear nueva playlist inline -->
+      @if (!showNewPlaylistForm) {
+        <button
+          (click)="showNewPlaylistForm = true"
+          class="w-full text-left px-4 py-3 text-[#FACD3D] text-sm hover:bg-[#242424] rounded-lg transition-colors flex items-center gap-2 mt-2"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Nueva playlist
+        </button>
+      } @else {
+        <div class="mt-3 flex gap-2">
+          <input
+            type="text"
+            [(ngModel)]="newPlaylistName"
+            placeholder="Nombre de la playlist"
+            class="flex-1 bg-[#242424] border border-[#535353] rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-[#FACD3D] transition-colors"
+          />
+          <button
+            (click)="createAndAdd()"
+            [disabled]="!newPlaylistName.trim()"
+            class="px-3 py-2 bg-[#FACD3D] text-black text-sm font-semibold rounded-lg hover:bg-yellow-300 transition-colors disabled:opacity-50"
+          >
+            Crear
+          </button>
+        </div>
+      }
     </div>
   </div>
 }
